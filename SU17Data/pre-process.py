@@ -1,8 +1,8 @@
 #Author: Xinran
 import csv
 # Input data
-datafile = 'negativeMessageFirstBatchData.csv'
-
+inputDataName = 'neg'
+# inputData = 'neg'
 # Output data
 data_out = []
 var_data_out=[]
@@ -46,10 +46,15 @@ with open('messageLabel.csv') as messageLabel:
         count += 1
 
 
+# select input data
+if inputDataName == 'pos':
+    datafile = 'positiveMessageFirstBatchData.csv'
+    label = pos_label_list
+elif inputDataName == 'neg':
+    datafile = 'negativeMessageFirstBatchData.csv'
+    label = neg_label_list
+
 # open the input file
-
-label = neg_label_list
-
 with open(datafile) as inputData:
     input_csv = csv.reader(inputData)
     headers = next(input_csv)
@@ -77,12 +82,12 @@ with open(datafile) as inputData:
 
         for i in range(0,27):
             data_num =decimal_to_ternary(i)
-            tmp = ''
+            tmp = 0
+            nullValue=True
             for j in range(1,6):
                 data_index = headers.index('M' +str(j)+ '_'+data_num+'_1')
                 if(line[data_index] != ''):
-                    tmp = 0
-                    count+=1
+                    nullValue=False
                     if (label[i][j-1] == '0'):
                         tmp += (-1) * int(line[data_index])
                     else:
@@ -90,19 +95,22 @@ with open(datafile) as inputData:
                     #print(str(tmp)+' , '+str(j)+ '_'+str(data_num))
                 # else:
                 #      tmp = None
-            var_data_list.append(tmp)
+            if not nullValue:
+                var_data_list.append(tmp)
+            else:
+                var_data_list.append('')
         #print var_data_list
         var_data_out.append(var_data_list)
 
 
-with open('neg_msg_output.csv','w') as msg_f:
+with open(inputDataName+'_msg_output.csv','w') as msg_f:
     msg_csv = csv.writer(msg_f)
     header = ['M'+str(i) for i in range(1,6)]
     msg_csv.writerow(header)
     for line in data_out:
         msg_csv.writerow(line)
 
-with open('neg_var_output.csv','w') as var_f:
+with open(inputDataName+'_var_output.csv','w') as var_f:
     var_csv = csv.writer(var_f)
     header = [decimal_to_ternary(i) for i in range(27)]
     var_csv.writerow(header)
