@@ -5,7 +5,9 @@
 <script type="text/javascript" src="customize.js"></script>
 <style>.cmx-user-scene4 .cmx-text-border .cmx-path {stroke: orange}</style>
 <body>
-  <div style="max-width:900px; -webkit-transform:rotate(0deg)">
+	<table>
+		<tr>
+		<td id="leftPart" style="width:300px;">
 
     <scene id="scene1">
       <drawing t="translate(0,31)">
@@ -40,10 +42,16 @@
         setActor2();
         render();
       </script>
-    </scene>
-
-    
-
-  </div>
+    </scene>   
+  </td>
+  
+  <td id="middlePart" align="center" style="width:150px;">VS</td>
+  
+  <td id="rightPart" align="center" style="width:300px; font-size: 14px;">
+    Last 2 weeks , I went to the gym less than 60% of my friends!! 
+  </td>
+	</tr>
+	</table>
   <button type="button" onclick="render()">Rerender</button>
+  <button type="button" onclick="switchTextComic()">Switch!</button>
   </body>
