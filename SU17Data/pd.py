@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from pymc3 import traceplot
 
 # Read in a comma-delimited file containing our data
-data = pd.read_table('neg_tab_output.txt', sep=',')
+data = pd.read_table('neg_item_output.txt', sep=',')
 
 # Initialize the model
 model = Model(data)

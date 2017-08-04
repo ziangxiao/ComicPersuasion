@@ -99,9 +99,8 @@ with open(datafile) as inputData:
                 var_data_list.append(tmp)
             else:
                 var_data_list.append('')
-        #print var_data_list
-        var_data_out.append(var_data_list)
 
+        var_data_out.append(var_data_list)
 
 with open(inputDataName+'_msg_output.csv','w') as msg_f:
     msg_csv = csv.writer(msg_f)
@@ -116,3 +115,14 @@ with open(inputDataName+'_var_output.csv','w') as var_f:
     var_csv.writerow(header)
     for line in var_data_out:
         var_csv.writerow(line)
+
+with open(inputDataName+'_item_output.txt','w') as var_f:
+    var_csv = csv.writer(var_f)
+    header = ['gesture','dist','shading','y']
+    var_csv.writerow(header)
+    for line in var_data_out:
+        for i in range(0,27):
+            if line[i]!='':
+                dataNum = decimal_to_ternary(i)
+                dataTuple = [dataNum[0],dataNum[1],dataNum[2],line[i]]
+                var_csv.writerow(dataTuple)
