@@ -2,7 +2,6 @@ import matplotlib.pyplot as plt; plt.rcdefaults()
 import numpy as np
 import matplotlib.pyplot as plt
 import pymc3 as pm
-
 '''
 objects = ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10')
 objects2 = ('-5', '-4', '-3', '-2','-1', '0', '1', '2', '3', '4', '5')
@@ -19,7 +18,7 @@ plt.title('Score Distribution')
 s = np.random.uniform(-5,5,1000)
 count, bins, ignored = plt.hist(s, 15, normed=True)
 plt.plot(bins, np.ones_like(bins), linewidth=2, color='r')
-with pymc3.Model():
+with pm.Model():
     mu = pm.Normal('mu', 0, 1)
     sigma = 1.
     returns = pm.Normal('returns', mu=mu, sd=sigma, observed=observed_data)

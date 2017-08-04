@@ -1,7 +1,7 @@
 #Author: Xinran
 import csv
 # Input data
-inputDataName = 'neg'
+inputDataName = 'pos'
 # inputData = 'neg'
 # Output data
 data_out = []
