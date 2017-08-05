@@ -77,4 +77,16 @@ function render(){
   			}
   			//alert("inside!!");
   		}
+		
+	//Random switch the position of the text and comic
+	if(Math.random() >= 0.5)
+	{
+		switchTextComic()
+	}
+}
+
+function switchTextComic(){
+	var elem = document.getElementById("middlePart");
+	elem.parentNode.insertBefore(elem,elem.parentNode.firstElementChild);
+	elem.parentNode.insertBefore(elem.parentNode.lastElementChild,elem.parentNode.firstElementChild);
 }
