@@ -83,7 +83,7 @@ function render(){
   			}
   			//alert("inside!!");
   		}
-			shad+=1;
+			shad = (shad+1)%3;
 }
 
 function switchTextComic(){
