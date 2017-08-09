@@ -1,11 +1,13 @@
+//Some default parameters
+var defaultLimit = 20
 // 3 parameters controlling the different levels of elements
 var gest = 2;
 var dist = 1;
 var shad = 0;
 
 function load(){
-	setActor1();
-	setActor2();
+	//setActor1();
+	//setActor2();
 	render();
 }
 		
@@ -76,25 +78,18 @@ function setActor2(){ // set the position and gesture of actor 2
 	}
 }
 function render(){
+	// Draw the picture on the canvas with the creatjs
+	var stage = new createjs.Stage("comicCanvas");
+	var circle = new createjs.Shape();
+	circle.graphics.beginFill("DeepSkyBlue").drawCircle(0, 0, 50);
+	circle.x = 100;
+	circle.y = 100;
+	stage.addChild(circle);
+	stage.update();
 	//Get message from text area
 	var msgContent = document.getElementById("messageArea").value;
 	document.getElementById("textPart").innerHTML = msgContent;
-	setInfoBubble(msgContent);
-	//Change shading
-	var cols = document.getElementsByClassName('cmx-scene');
-  		// change the shading of the comic panel based on shading score
-  		for(i=0; i<cols.length; i++) {
-  			if(shad==1){
-  				cols[i].style.backgroundColor = '#cccccc';
-  			}
-  			else if(shad==2){
-  				cols[i].style.backgroundColor = '#999999';
-  			}
- 			else{
- 				cols[i].style.backgroundColor = '#ffffff';
-  			}
-  		}
-			shad = (shad+1)%3;
+	var limit = parseInt(document.getElementById("limitArea").value);
 }
 
 function switchTextComic(){
@@ -117,17 +112,16 @@ function saveCanvas(){
 	window.open('', document.getElementById('pic_canvas').toDataURL());
 }
 
-function setInfoBubble(msg){
+function setInfoBubble(msg, limit = defaultLimit){
 	var infoBubble = document.getElementById("infoBubble");
-	alert(infoBubble.innerHTML);
 	infoBubble.innerHTML='';
-	
+	// How to redraw the picture?
 	var msgSplit = msg.split(" ")
 	console.log(msgSplit)
 	var count = 0;
 	var lineNum = 0;
 	var tmpMsg = '';
-	limit = 20
+
 	while(msgSplit[count]){
 		console.log(msgSplit[count])
 		if(tmpMsg.length + msgSplit[count].length <= limit){

@@ -1,15 +1,19 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-<link rel="stylesheet" href="scene.css">
-<script type="text/javascript" src="cmx.js"></script>
-<script type="text/javascript" src="customize.js"></script>
-
+<head>
+<link rel="stylesheet" href="./css/scene.css">
+<!--script type="text/javascript" src="js/cmx.js"></script-->
+<script type="text/javascript" src="js/customize.js"></script>
+<script src="https://code.createjs.com/easeljs-0.8.2.min.js"></script>
+<!-- JQuery -->
+<!--script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script-->
+</head>
 <body onload="load()">
 	<table>
 		<tr>
 		<td id="comicPart" style="width:300px;">
-		
-    <scene id="scene1" hight="300px" width="350px">
+		<canvas id="comicCanvas" width="300" height="300"></canvas>
+    <!--scene id="scene1" hight="300px" width="350px">
       <drawing t="translate(0,31)">
         <line stroke="black">
           <point x="0" y="0"></point>
@@ -18,8 +22,8 @@
       </drawing>
       <actor id="actor1">
         <bubble t="translate(-2,-9)" pose="0,0|-14,24|-36,69|-15,4|-34,48|-35,93">
-        <!-- <bubble t="translate(-2,-9)" pose="0,0|-14,24|-36,69|27,28|8,72|-35,93"> -->
-          <!-- <tspan x="-24" y="2em">Oh! No..</tspan> -->
+        <<bubble t="translate(-2,-9)" pose="0,0|-14,24|-36,69|27,28|8,72|-35,93"> >
+          <!-- <tspan x="-24" y="2em">Oh! No..</tspan> >
           <tspan x="-16" y="2em">Oh! Yes!!!</tspan>
         </bubble>
       </actor>
@@ -31,7 +35,7 @@
         <bubble id="infoBubble" t="translate(9,11) rotate(2)" pose="0,0|-20,10|-81,49|19,66|-21,145|-73,109">
         </bubble>
       </actor>
-    </scene>
+    </scene-->
   </td>
 
   <td id="middlePart" align="center" style="width:150px;"></td>
@@ -50,10 +54,12 @@
 	
 	<div>Edit Area
 	<textarea id="messageArea">Your exercise activity is in the top 20% of all your friends.</textarea>
+	<textarea id="limitArea">10</textarea>
   <button type="button" onclick="render()">Rerender</button>
   <button type="button" onclick="comicPosition()">Switch!</button>
   <button type="button" onclick="saveCanvas()">Save</button>
   </div>
   </body>
 
+  <!--script src="js/require.js" defer async="true" ></script-->
   

@@ -2051,7 +2051,8 @@ var requirejs, require, define;
     //Set up with config info.
     req(cfg);
 }(this));
-(function () {
+
+function cmx_function () {
 /*!
  * jQuery JavaScript Library v1.9.1
  * http://jquery.com/
@@ -2065,6 +2066,7 @@ var requirejs, require, define;
  *
  * Date: 2013-2-4
  */
+
 (function( window, undefined ) {
 
 // Can't do this because several apps including ASP.NET trace
@@ -23786,7 +23788,8 @@ define("svginnerhtml", function(){});
         }
         return this.closeFrame();
       };
-
+		
+		
       return Drawing;
 
     })(Entity);
@@ -24202,7 +24205,7 @@ define("svginnerhtml", function(){});
 
 (function() {
 
-  require.config({
+  /*require.config({
     paths: {
       'jquery': 'vendor/jquery',
       'd3': 'vendor/d3/d3',
@@ -24212,10 +24215,11 @@ define("svginnerhtml", function(){});
       'cmx': '../../lib/cmx',
       'd3ext': 'd3ext'
     }
-  });
-
+  });*/
+	
   require(['jquery', 'd3', 'd3ext', 'underscore', 'underscore.string', 'svginnerhtml', 'cmx'], function(_jq, _d3, d3ext, underscore, underscoreString, _svginnerhtml, cmx) {
-    var launch, loadWebFonts, publishEvent;
+    alert("test!");
+	var launch, loadWebFonts, publishEvent;
     publishEvent = function(name) {
       console.log("" + name);
       $("body").trigger(name, cmx);
@@ -24271,4 +24275,5 @@ define("svginnerhtml", function(){});
 }).call(this);
 
 define("main", function(){});
-}());
+}
+
