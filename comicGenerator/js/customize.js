@@ -80,16 +80,53 @@ function setActor2(){ // set the position and gesture of actor 2
 function render(){
 	// Draw the picture on the canvas with the creatjs
 	var stage = new createjs.Stage("comicCanvas");
+	// Draw the border
+	var border = new createjs.Shape();
+	border.graphics.setStrokeStyle(3).beginStroke("black");
+	border.graphics.drawRect(15, 15, 265, 270);
+	stage.addChild(border);
+	// Draw the info label
+	var infoLabel = new createjs.Shape();
+	border.graphics.setStrokeStyle(3).beginStroke("black");
+	border.graphics.beginFill("white").drawRect(20, 5, 150, 40);
+	stage.addChild(border);
+	// Draw the character
 	var circle = new createjs.Shape();
-	circle.graphics.beginFill("DeepSkyBlue").drawCircle(0, 0, 50);
-	circle.x = 100;
-	circle.y = 100;
+	circle.graphics.setStrokeStyle(3).beginStroke("black");
+	circle.graphics.drawCircle(0, 0, 20);
+	circle.x = 50;
+	circle.y = 150;
 	stage.addChild(circle);
-	stage.update();
-	//Get message from text area
+	
+	var bodyLine = new createjs.Shape();
+	stage.addChild(bodyLine);
+	bodyLine.graphics.setStrokeStyle(3).beginStroke("black");
+	bodyLine.graphics.moveTo(50, 170);
+	// Body
+	bodyLine.graphics.lineTo(50, 230);
+	// Legs
+	bodyLine.graphics.lineTo(30, 260);
+	bodyLine.graphics.moveTo(50, 230);
+	bodyLine.graphics.lineTo(60, 260);
+	// Arms
+	bodyLine.graphics.moveTo(50, 180);
+	bodyLine.graphics.lineTo(30, 210);
+	bodyLine.graphics.moveTo(50, 180);
+	bodyLine.graphics.lineTo(60, 210);
+	// Stop drawing this line
+	bodyLine.graphics.endStroke();
+	// Set message
+	// Get message from text area
 	var msgContent = document.getElementById("messageArea").value;
 	document.getElementById("textPart").innerHTML = msgContent;
 	var limit = parseInt(document.getElementById("limitArea").value);
+	var massage = new createjs.Text(msgContent,"12px Arial","black");
+	massage.x = 50;
+	massage.y = 100;
+	massage.textBaseline = "alphabetic";
+	stage.addChild(massage);
+	stage.update();
+	
 }
 
 function switchTextComic(){
@@ -106,10 +143,14 @@ function comicPosition(){
 }
 
 function saveCanvas(){
-	var c = document.getElementById('pic_canvas');
-	var t = c.getContext('2d');
-	/* then use the canvas 2D drawing functions to add text, etc. for the result */
-	window.open('', document.getElementById('pic_canvas').toDataURL());
+	var canvas = document.getElementById("comicCanvas");
+    document.getElementById("theimage").src = canvas.toDataURL();
+    //Canvas2Image.saveAsJPEG(canvas);
+	var dataString = canvas.toDataURL("image/png");
+	var link = document.createElement("a");
+	link.download = 'image';
+	link.href = dataString;
+	link.click();
 }
 
 function setInfoBubble(msg, limit = defaultLimit){

@@ -5,14 +5,15 @@
 <!--script type="text/javascript" src="js/cmx.js"></script-->
 <script type="text/javascript" src="js/customize.js"></script>
 <script src="https://code.createjs.com/easeljs-0.8.2.min.js"></script>
+<script src="http://hongru.github.io/proj/canvas2image/canvas2image.js"></script>
 <!-- JQuery -->
 <!--script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script-->
 </head>
 <body onload="load()">
 	<table>
 		<tr>
-		<td id="comicPart" style="width:300px;">
-		<canvas id="comicCanvas" width="300" height="300"></canvas>
+		<td id="comicPart" width="300px">
+		<canvas id="comicCanvas" width="300px" height="300px"></canvas>
     <!--scene id="scene1" hight="300px" width="350px">
       <drawing t="translate(0,31)">
         <line stroke="black">
@@ -59,6 +60,7 @@
   <button type="button" onclick="comicPosition()">Switch!</button>
   <button type="button" onclick="saveCanvas()">Save</button>
   </div>
+  <image id="theimage"></image>
   </body>
 
   <!--script src="js/require.js" defer async="true" ></script-->
