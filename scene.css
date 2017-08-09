@@ -12,11 +12,20 @@ scene {
   font-style: normal;
 }
 
+@font-face {
+  font-family: Tribeca;
+  src: url("Tribeca.ttf");
+}
+
+@font-face {
+  font-family: Tribeca;
+  src: url("Tribeca.eot");
+}
+
 .cmx-scene {
   float: left;
-
-  font-family: "xkcd", sans-serif;
-  font-size: 14px;
+  font-family: Georgia, serif;
+  font-size: 20px;
   background-color: white;
   margin: 0px;
   position: relative;

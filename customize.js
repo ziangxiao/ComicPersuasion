@@ -2,8 +2,16 @@
 var gest = 2;
 var dist = 1;
 var shad = 0;
+
+function load(){
+	setActor1();
+	setActor2();
+	render();
+}
+		
 function setActor1(){ // set the position and gesture of actor 1
 	var act1 = document.getElementById('actor1');
+	
 	if(gest==0){//Neutral
 		act1.setAttribute('t', 'translate(94,19) rotate(-2)');
 		act1.setAttribute('pose', '-11,9|-5,117|-11,99|-11,89|-11,79|-11,59|-16,34|-21,9|-6,34|-1,9|-18,79|-18,59|-6,79|-1,59');
@@ -68,7 +76,11 @@ function setActor2(){ // set the position and gesture of actor 2
 	}
 }
 function render(){
-	//alert("inside!!");
+	//Get message from text area
+	var msgContent = document.getElementById("messageArea").value;
+	document.getElementById("textPart").innerHTML = msgContent;
+	setInfoBubble(msgContent);
+	//Change shading
 	var cols = document.getElementsByClassName('cmx-scene');
   		// change the shading of the comic panel based on shading score
   		for(i=0; i<cols.length; i++) {
@@ -81,7 +93,6 @@ function render(){
  			else{
  				cols[i].style.backgroundColor = '#ffffff';
   			}
-  			//alert("inside!!");
   		}
 			shad = (shad+1)%3;
 }
@@ -96,5 +107,53 @@ function comicPosition(){
 	if(Math.random() >= 0.5)
 	{
 		switchTextComic()
+	}
+}
+
+function saveCanvas(){
+	var c = document.getElementById('pic_canvas');
+	var t = c.getContext('2d');
+	/* then use the canvas 2D drawing functions to add text, etc. for the result */
+	window.open('', document.getElementById('pic_canvas').toDataURL());
+}
+
+function setInfoBubble(msg){
+	var infoBubble = document.getElementById("infoBubble");
+	alert(infoBubble.innerHTML);
+	infoBubble.innerHTML='';
+	
+	var msgSplit = msg.split(" ")
+	console.log(msgSplit)
+	var count = 0;
+	var lineNum = 0;
+	var tmpMsg = '';
+	limit = 20
+	while(msgSplit[count]){
+		console.log(msgSplit[count])
+		if(tmpMsg.length + msgSplit[count].length <= limit){
+			tmpMsg += msgSplit[count];
+			tmpMsg += ' '
+		}
+		else{
+			//Add a line of message
+			var line = document.createElement('tspan');
+			line.innerHTML = tmpMsg;
+			line.setAttribute('x', '0');
+			line.setAttribute('y', lineNum.toString()+'em');
+			
+			infoBubble.appendChild(line);
+			tmpMsg = msgSplit[count]+' ';
+			lineNum+=1
+		}
+		count+=1;
+		console.log(tmpMsg)
+	}
+	if(tmpMsg != ''){
+		var line = document.createElement('tspan');
+			line.innerHTML = tmpMsg;
+			line.setAttribute('x', '0');
+			line.setAttribute('y', lineNum.toString()+'em');
+			
+			infoBubble.appendChild(line);
 	}
 }
