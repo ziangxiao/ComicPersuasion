@@ -236,7 +236,7 @@ function setCharacter(x,y,gest=defaultGest,ori = -1){
 	return container;
 }
 
-function getBubble(x,y,message,limit = 20){
+function getBubble(x,y,message,limit = 18){
 	var container = new createjs.Container();
 	container.x = x;
 	container.y = y;
@@ -249,7 +249,7 @@ function getBubble(x,y,message,limit = 20){
 	var tmpY = 0;
 	for (var i =0; i < msgList.length; i++){
 		var tmpMsg = msgList[i];
-		var msgText = new createjs.Text(tmpMsg,labelFontSize.toString()+"px Arial","black");
+		var msgText = new createjs.Text(tmpMsg,labelFontSize.toString()+"px xkcd","black");
 		msgText.x = 5;
 		msgText.y = tmpY;
 		container.addChild(msgText);

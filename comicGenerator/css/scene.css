@@ -3,7 +3,7 @@ scene {
 }
 
 @font-face {
-  font-family: 'xkcd';
+  font-family: xkcd;
   src: url('/fonts/xkcd.eot');
   src: url('/fonts/xkcd.eot?#iefix') format('embedded-opentype'),
        url('/fonts/xkcd.woff') format('woff'),
