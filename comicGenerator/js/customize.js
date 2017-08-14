@@ -2,7 +2,7 @@
 var defaultLimit = 20
 // 3 parameters controlling the different levels of elements
 // gest: (neg)-2,-1,0,1,2(pos)
-var defaultGest = 0;
+var defaultGest = 1;
 var defaultDist = 2;
 var defaultShad = 0;
 
@@ -11,9 +11,9 @@ var labelMessage = "One day, your friend tell you...";
 var msgA = ["No!"]
 var msgB = ["Congrats!","You have reached your goal of exercising three times a week."]
 function load(){
-	var gest = document.getElementById("gestArea").value;
-	var dist = document.getElementById("distArea").value;
-	var shad = document.getElementById("gestArea").value;
+	var gest = parseInt(document.getElementById("gestArea").value);
+	var dist = parseFloat(document.getElementById("distArea").value);
+	var shad = parseFloat(document.getElementById("shadArea").value);
 	render(gest,dist,shad,msgA,msgB);
 }
 
@@ -249,7 +249,7 @@ function getBubble(x,y,message,limit = 18){
 	var tmpY = 0;
 	for (var i =0; i < msgList.length; i++){
 		var tmpMsg = msgList[i];
-		var msgText = new createjs.Text(tmpMsg,labelFontSize.toString()+"px xkcd","black");
+		var msgText = new createjs.Text(tmpMsg,labelFontSize.toString()+"px Arial","black");
 		msgText.x = 5;
 		msgText.y = tmpY;
 		container.addChild(msgText);
@@ -261,9 +261,6 @@ function getBubble(x,y,message,limit = 18){
 }
 
 function getContainerLine(rectA, rectB){
-	console.log(rectA)
-	console.log(rectB)
-	
 	var ptAX = rectA.x + rectA.width/2;
 	var ptAY = rectA.y + rectA.height;
 	var ptBX = rectB.x + rectB.width/2;
@@ -277,7 +274,7 @@ function getContainerLine(rectA, rectB){
 }
 
 function render(gest=defaultGest, dist=defaultDist, shad=defaultShad, msgListA, msgListB){
-	
+	console.log(gest)
 	// Get message from text area
 	var msgContent = document.getElementById("messageArea").value;
 	document.getElementById("textPart").innerHTML = msgContent;
@@ -307,8 +304,8 @@ function render(gest=defaultGest, dist=defaultDist, shad=defaultShad, msgListA, 
 	line.graphics.lineTo(280,310);
 	
 	// Draw the character
-	var characterA = setCharacter(100-dist*20,250,1,-1);
-	var characterB = setCharacter(200+dist*20,250,2,1);
+	var characterA = setCharacter(100-dist*20,250,gest,-1);
+	var characterB = setCharacter(200+dist*20,250,0,1);
 	stage.addChild(characterA);
 	stage.addChild(characterB);
 	
