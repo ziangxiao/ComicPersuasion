@@ -1,14 +1,20 @@
 //Some default parameters
 var defaultLimit = 20
 // 3 parameters controlling the different levels of elements
+// gest: (neg)-2,-1,0,1,2(pos)
 var defaultGest = 0;
-var defaultDist = 1;
+var defaultDist = 2;
 var defaultShad = 0;
 
 var labelMessage = "One day, your friend tell you...";
 
+var msgA = ["No!"]
+var msgB = ["Congrats!","You have reached your goal of exercising three times a week."]
 function load(){
-	render();
+	var gest = document.getElementById("gestArea").value;
+	var dist = document.getElementById("distArea").value;
+	var shad = document.getElementById("gestArea").value;
+	render(gest,dist,shad,msgA,msgB);
 }
 
 function getMsgSplitList(msg, lengthLimit){
@@ -83,7 +89,7 @@ function setCharacter(x,y,gest=defaultGest,ori = -1){
 	container.y = y;
 	// Points for the head
 	var headPointX, headPointY, headRadius;
-	// bodyPointB is also the start point of the arms, bodyPointC is the start point of the legs
+	// bodyPointA is also the start point of the arms, bodyPointC is the start point of the legs
 	var bodyPointAX,bodyPointAY, bodyPointBX,bodyPointBY, bodyPointCX,bodyPointCY;
 	// Arms
 	var leftArmPointAX,leftArmPointAY, leftArmPointBX,leftArmPointBY;
@@ -93,59 +99,108 @@ function setCharacter(x,y,gest=defaultGest,ori = -1){
 	var rightLegPointAX,rightLegPointAY, rightLegPointBX,rightLegPointBY;
 	
 	switch(gest){
-		case 1:
+		case -2:
 			//head
-			headPointX=50; headPointY=50; headRadius=20;
+			headPointX=0; headPointY=0; headRadius=20;
 			//body
-			bodyPointAX=headPointX; bodyPointAY=headPointY+headRadius; 
-			bodyPointBX=bodyPointAX+ori*5;bodyPointBY=bodyPointAY+15;
-			bodyPointCX=bodyPointAX;bodyPointCY=bodyPointAY+50;
+			bodyPointAX=headPointX+ori*16;bodyPointAY=headPointY+headRadius-8; 
+			bodyPointBX=bodyPointAX+ori*10;bodyPointBY=bodyPointAY+15;
+			bodyPointCX=bodyPointAX+ori*10;bodyPointCY=bodyPointAY+40;
 			// Arms
-			leftArmPointAX=bodyPointBX-10;leftArmPointAY=bodyPointBY+10;
-			leftArmPointBX=leftArmPointAX-10;leftArmPointBY=leftArmPointAY+10;
-			rightArmPointAX=bodyPointBX+5;rightArmPointAY=bodyPointBY+10;
-			rightArmPointBX=rightArmPointAX+5;rightArmPointBY=rightArmPointAY+10;
+			leftArmPointAX=bodyPointAX+ori*13;leftArmPointAY=bodyPointAY+15;
+			leftArmPointBX=leftArmPointAX;leftArmPointBY=leftArmPointAY+20;
+			rightArmPointAX=bodyPointAX+ori*(-10);rightArmPointAY=bodyPointAY+20;
+			rightArmPointBX=rightArmPointAX+ori*(-20);rightArmPointBY=rightArmPointAY-20;
 			// Legs
-			leftLegPointAX=bodyPointCX-16;leftLegPointAY=bodyPointCY+27;
-			leftLegPointBX=leftLegPointAX-10;leftLegPointBY=leftLegPointAY-15;
-			rightLegPointAX=bodyPointCX+8;rightLegPointAY=bodyPointCY+16;
-			rightLegPointBX=rightLegPointAX+8;rightLegPointBY=rightLegPointAY+16;
+			leftLegPointAX=bodyPointCX-ori*16;leftLegPointAY=bodyPointCY+20;
+			leftLegPointBX=leftLegPointAX+ori*30;leftLegPointBY=leftLegPointAY+5;
+			rightLegPointAX=bodyPointCX-ori*8;rightLegPointAY=bodyPointCY+16;
+			rightLegPointBX=rightLegPointAX+ori*28;rightLegPointBY=rightLegPointAY+3;
+			break;
+		case -1:
+			headPointX=0; headPointY=0; headRadius=20;
+			//body
+			bodyPointAX=headPointX+ori*12;bodyPointAY=headPointY+headRadius-4; 
+			bodyPointBX=bodyPointAX+ori*8;bodyPointBY=bodyPointAY+18;
+			bodyPointCX=bodyPointAX+ori*8;bodyPointCY=bodyPointAY+40;
+			// Arms
+			leftArmPointAX=bodyPointAX-ori*8;leftArmPointAY=bodyPointAY+18;
+			leftArmPointBX=leftArmPointAX-ori*3;leftArmPointBY=leftArmPointAY+25;
+			rightArmPointAX=bodyPointAX+ori*(-2);rightArmPointAY=bodyPointAY+20;
+			rightArmPointBX=rightArmPointAX+ori*(-2);rightArmPointBY=rightArmPointAY+25;
+			// Legs
+			leftLegPointAX=bodyPointCX+ori*5;leftLegPointAY=bodyPointCY+20;
+			leftLegPointBX=leftLegPointAX+ori*3;leftLegPointBY=leftLegPointAY+20;
+			rightLegPointAX=bodyPointCX-ori*8;rightLegPointAY=bodyPointCY+16;
+			rightLegPointBX=rightLegPointAX-ori*3;rightLegPointBY=rightLegPointAY+20;
+			break;
+		case 0:
+			headPointX=0; headPointY=0; headRadius=20;
+			//body
+			bodyPointAX=headPointX;bodyPointAY=headPointY+headRadius; 
+			bodyPointBX=bodyPointAX+ori*3;bodyPointBY=bodyPointAY+18;
+			bodyPointCX=bodyPointAX+ori*3;bodyPointCY=bodyPointAY+40;
+			// Arms
+			leftArmPointAX=bodyPointAX-ori*3;leftArmPointAY=bodyPointAY+18;
+			leftArmPointBX=leftArmPointAX-ori*3;leftArmPointBY=leftArmPointAY+25;
+			rightArmPointAX=bodyPointAX+ori*7;rightArmPointAY=bodyPointAY+20;
+			rightArmPointBX=rightArmPointAX+ori*7;rightArmPointBY=rightArmPointAY+25;
+			// Legs
+			leftLegPointAX=bodyPointCX+ori*5;leftLegPointAY=bodyPointCY+20;
+			leftLegPointBX=leftLegPointAX+ori*3;leftLegPointBY=leftLegPointAY+20;
+			rightLegPointAX=bodyPointCX-ori*5;rightLegPointAY=bodyPointCY+20;
+			rightLegPointBX=rightLegPointAX-ori*3;rightLegPointBY=rightLegPointAY+20;
+			break;
+		case 1:
+			headPointX=0; headPointY=0; headRadius=20;
+			//body
+			bodyPointAX=headPointX-ori*12;bodyPointAY=headPointY+headRadius-4;
+			bodyPointBX=bodyPointAX-ori*3;bodyPointBY=bodyPointAY+18;
+			bodyPointCX=bodyPointAX-ori*3;bodyPointCY=bodyPointAY+40;
+			// Arms
+			leftArmPointAX=bodyPointAX-ori*20;leftArmPointAY=bodyPointAY-5;
+			leftArmPointBX=leftArmPointAX-ori*3;leftArmPointBY=leftArmPointAY-25;
+			rightArmPointAX=bodyPointAX+ori*18;rightArmPointAY=bodyPointAY+18;
+			rightArmPointBX=rightArmPointAX+ori*7;rightArmPointBY=rightArmPointAY+25;
+			// Legs
+			leftLegPointAX=bodyPointCX+ori*15;leftLegPointAY=bodyPointCY+20;
+			leftLegPointBX=leftLegPointAX+ori*3;leftLegPointBY=leftLegPointAY+20;
+			rightLegPointAX=bodyPointCX-ori*15;rightLegPointAY=bodyPointCY+20;
+			rightLegPointBX=rightLegPointAX-ori*3;rightLegPointBY=rightLegPointAY+20;
 			break;
 		case 2:
-		    //head
-			headPointX=50; headPointY=50; headRadius=20;
+		    headPointX=0; headPointY=0; headRadius=20;
 			//body
-			bodyPointAX=headPointX; bodyPointAY=headPointY+headRadius; 
-			bodyPointBX=bodyPointAX+ori*5;bodyPointBY=bodyPointAY+15;
-			bodyPointCX=bodyPointAX;bodyPointCY=bodyPointAY+50;
+			bodyPointAX=headPointX-ori*16;bodyPointAY=headPointY+headRadius-8;
+			bodyPointBX=bodyPointAX-ori*13;bodyPointBY=bodyPointAY+25;
+			bodyPointCX=bodyPointAX-ori*3;bodyPointCY=bodyPointAY+50;
 			// Arms
-			leftArmPointAX=bodyPointBX-10;leftArmPointAY=bodyPointBY+10;
-			leftArmPointBX=leftArmPointAX-10;leftArmPointBY=leftArmPointAY+10;
-			rightArmPointAX=bodyPointBX+5;rightArmPointAY=bodyPointBY+10;
-			rightArmPointBX=rightArmPointAX+5;rightArmPointBY=rightArmPointAY+10;
+			leftArmPointAX=bodyPointAX-ori*20;leftArmPointAY=bodyPointAY-5;
+			leftArmPointBX=leftArmPointAX-ori*3;leftArmPointBY=leftArmPointAY-25;
+			rightArmPointAX=bodyPointAX+ori*22;rightArmPointAY=bodyPointAY+18;
+			rightArmPointBX=rightArmPointAX+ori*27;rightArmPointBY=rightArmPointAY-25;
 			// Legs
-			leftLegPointAX=bodyPointCX-8;leftLegPointAY=bodyPointCY+16;
-			leftLegPointBX=leftLegPointAX-8;leftLegPointBY=leftLegPointAY+16;
-			rightLegPointAX=bodyPointCX+8;rightLegPointAY=bodyPointCY+16;
-			rightLegPointBX=rightLegPointAX+8;rightLegPointBY=rightLegPointAY+16;
+			leftLegPointAX=bodyPointCX+ori*10;leftLegPointAY=bodyPointCY+28;
+			leftLegPointBX=leftLegPointAX+ori*25;leftLegPointBY=leftLegPointAY+5;
+			rightLegPointAX=bodyPointCX-ori*25;rightLegPointAY=bodyPointCY+10;
+			rightLegPointBX=rightLegPointAX-ori*3;rightLegPointBY=rightLegPointAY+20;
 			break;
 		default:
-			//head
-			headPointX=50; headPointY=50; headRadius=20;
+			headPointX=0; headPointY=0; headRadius=20;
 			//body
-			bodyPointAX=headPointX; bodyPointAY=headPointY+headRadius; 
-			bodyPointBX=bodyPointAX+ori*5;bodyPointBY=bodyPointAY+15;
-			bodyPointCX=bodyPointAX;bodyPointCY=bodyPointAY+50;
+			bodyPointAX=headPointX;bodyPointAY=headPointY+headRadius; 
+			bodyPointBX=bodyPointAX+ori*3;bodyPointBY=bodyPointAY+18;
+			bodyPointCX=bodyPointAX+ori*3;bodyPointCY=bodyPointAY+40;
 			// Arms
-			leftArmPointAX=bodyPointBX-10;leftArmPointAY=bodyPointBY+10;
-			leftArmPointBX=leftArmPointAX-10;leftArmPointBY=leftArmPointAY+10;
-			rightArmPointAX=bodyPointBX+5;rightArmPointAY=bodyPointBY+10;
-			rightArmPointBX=rightArmPointAX+5;rightArmPointBY=rightArmPointAY+10;
+			leftArmPointAX=bodyPointAX-ori*3;leftArmPointAY=bodyPointAY+18;
+			leftArmPointBX=leftArmPointAX-ori*3;leftArmPointBY=leftArmPointAY+25;
+			rightArmPointAX=bodyPointAX+ori*7;rightArmPointAY=bodyPointAY+20;
+			rightArmPointBX=rightArmPointAX+ori*7;rightArmPointBY=rightArmPointAY+25;
 			// Legs
-			leftLegPointAX=bodyPointCX-8;leftLegPointAY=bodyPointCY+16;
-			leftLegPointBX=leftLegPointAX-8;leftLegPointBY=leftLegPointAY+16;
-			rightLegPointAX=bodyPointCX+8;rightLegPointAY=bodyPointCY+16;
-			rightLegPointBX=rightLegPointAX+8;rightLegPointBY=rightLegPointAY+16;
+			leftLegPointAX=bodyPointCX+ori*5;leftLegPointAY=bodyPointCY+20;
+			leftLegPointBX=leftLegPointAX+ori*3;leftLegPointBY=leftLegPointAY+20;
+			rightLegPointAX=bodyPointCX-ori*5;rightLegPointAY=bodyPointCY+20;
+			rightLegPointBX=rightLegPointAX-ori*3;rightLegPointBY=rightLegPointAY+20;
 			break;
 	}
 
@@ -160,17 +215,21 @@ function setCharacter(x,y,gest=defaultGest,ori = -1){
 	bodyLine.graphics.setStrokeStyle(2,1,1).beginStroke("black");
 	bodyLine.graphics.moveTo(bodyPointAX, bodyPointAY);
 	// Body
-	bodyLine.graphics.bezierCurveTo(bodyPointAX, bodyPointAY, bodyPointBX,bodyPointBY, bodyPointCX,bodyPointCY);
+	bodyLine.graphics.quadraticCurveTo(bodyPointBX,bodyPointBY, bodyPointCX,bodyPointCY);
 	// Arms
 	bodyLine.graphics.moveTo(bodyPointAX, bodyPointAY);
-	bodyLine.graphics.bezierCurveTo(bodyPointBX, bodyPointBY, leftArmPointAX,leftArmPointAY, leftArmPointBX,leftArmPointBY);
+	bodyLine.graphics.lineTo(leftArmPointAX,leftArmPointAY);
+	bodyLine.graphics.lineTo(leftArmPointBX,leftArmPointBY);
 	bodyLine.graphics.moveTo(bodyPointAX, bodyPointAY);
-	bodyLine.graphics.bezierCurveTo(bodyPointBX, bodyPointBY, rightArmPointAX,rightArmPointAY, rightArmPointBX,rightArmPointBY);
+	bodyLine.graphics.lineTo(rightArmPointAX,rightArmPointAY);
+	bodyLine.graphics.lineTo(rightArmPointBX,rightArmPointBY);
 	// Legs
 	bodyLine.graphics.moveTo(bodyPointCX, bodyPointCY);
-	bodyLine.graphics.bezierCurveTo(bodyPointCX, bodyPointCY, leftLegPointAX,leftLegPointAY, leftLegPointBX,leftLegPointBY);
+	bodyLine.graphics.lineTo(leftLegPointAX,leftLegPointAY);
+	bodyLine.graphics.lineTo(leftLegPointBX,leftLegPointBY);
 	bodyLine.graphics.moveTo(bodyPointCX, bodyPointCY);
-	bodyLine.graphics.bezierCurveTo(bodyPointCX, bodyPointCY, rightLegPointAX,rightLegPointAY, rightLegPointBX,rightLegPointBY);	
+	bodyLine.graphics.lineTo(rightLegPointAX,rightLegPointAY);
+	bodyLine.graphics.lineTo(rightLegPointBX,rightLegPointBY);
 	// Stop drawing this line
 	bodyLine.graphics.endStroke();
 	
@@ -217,12 +276,12 @@ function getContainerLine(rectA, rectB){
 	return line;
 }
 
-function render(gest=defaultGest, dist=defaultDist, shad=defaultShad){
+function render(gest=defaultGest, dist=defaultDist, shad=defaultShad, msgListA, msgListB){
 	
 	// Get message from text area
 	var msgContent = document.getElementById("messageArea").value;
 	document.getElementById("textPart").innerHTML = msgContent;
-	var limit = parseInt(document.getElementById("limitArea").value);
+	
 	
 	// Set the shading of the canvas
 	setBackgroundShading(shad);
@@ -248,26 +307,41 @@ function render(gest=defaultGest, dist=defaultDist, shad=defaultShad){
 	line.graphics.lineTo(280,310);
 	
 	// Draw the character
-	var characterA = setCharacter(50,200,1,-1);
-	var characterB = setCharacter(150,200,0,1);
+	var characterA = setCharacter(100-dist*20,250,1,-1);
+	var characterB = setCharacter(200+dist*20,250,2,1);
 	stage.addChild(characterA);
 	stage.addChild(characterB);
 	
 	// Add message bubble
 	// And draw the lines between bubbles
-	var bubbleA = getBubble(30,150,"Yes!!!");
-	stage.addChild(bubbleA);
-	stage.addChild(getContainerLine(bubbleA.getTransformedBounds(),characterA.children[0].getTransformedBounds()))	
+	var bubbleA = []
+	var bubbleB = []
+	for (var i = 0;i<msgListA.length;i++){
+		bubbleA.push(getBubble(30, 200-50*(i+1),msgListA[i]));
+	}
+	for (var i = 0;i<bubbleA.length;i++){
+		stage.addChild(bubbleA[i]);
+	}
+	for (var i = 1;i<bubbleA.length;i++){
+		stage.addChild(getContainerLine(bubbleA[i-1].getTransformedBounds(),bubbleA[i].getTransformedBounds()))	
+	}
+	if(bubbleA.length>0){
+		stage.addChild(getContainerLine(bubbleA[bubbleA.length-1].getTransformedBounds(),characterA.children[0].getTransformedBounds()))
+	}
 	
 	var bubbleB = []
-	bubbleB.push(getBubble(150, 50,"Last 2 weeks, "));
-	bubbleB.push(getBubble(150, 100,"You went to the gym less than 60% of your friends!!",18));
+	for (var i = 0;i<msgListB.length;i++){
+		bubbleB.push(getBubble(150, 50*(i+1),msgListB[i]));
+	}
 	for (var i = 0;i<bubbleB.length;i++){
 		stage.addChild(bubbleB[i]);
 	}
-	stage.addChild(getContainerLine(bubbleB[0].getTransformedBounds(),bubbleB[1].getTransformedBounds()))
-	console.log(characterB.children[0]);
-	stage.addChild(getContainerLine(bubbleB[1].getTransformedBounds(),characterB.children[0].getTransformedBounds()))	
+	for (var i = 1;i<bubbleB.length;i++){
+		stage.addChild(getContainerLine(bubbleB[i-1].getTransformedBounds(),bubbleB[i].getTransformedBounds()))	
+	}
+	if(bubbleB.length>0){
+		stage.addChild(getContainerLine(bubbleB[bubbleB.length-1].getTransformedBounds(),characterB.children[0].getTransformedBounds()))
+	}
 	
 	stage.update();
 	
