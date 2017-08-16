@@ -3,13 +3,10 @@ scene {
 }
 
 @font-face {
-  font-family: xkcd;
-  src: url('/fonts/xkcd.eot');
-  src: url('/fonts/xkcd.eot?#iefix') format('embedded-opentype'),
-       url('/fonts/xkcd.woff') format('woff'),
-       url('/fonts/xkcd.ttf') format('tff');
-  font-weight: normal;
-  font-style: normal;
+  font-family: "xkcd";
+  src: url('fonts/xkcd.tff') format('tff'),
+		url('fonts/xkcd.woff') format('woff');
+	   
 }
 
 @font-face {
@@ -20,6 +17,10 @@ scene {
 @font-face {
   font-family: Tribeca;
   src: url("Tribeca.eot");
+}
+
+.myText{
+	font-family: xkcd;
 }
 
 .cmx-scene {
