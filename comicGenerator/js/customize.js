@@ -6,9 +6,9 @@ var defaultGest = 1;
 var defaultDist = 2;
 var defaultShad = 0;
 
-var labelMessage = "One day, your friend tell you...";
+var labelMessage = "One night, your mom tell you...";
 
-var msgA = ["No!"]
+var msgA = ["No..."]
 var msgB = ["Congrats!","You have reached your goal of exercising three times a week."]
 function load(){
 	var gest = parseInt(document.getElementById("gestArea").value);
@@ -62,17 +62,16 @@ function setInfoLabel(rough,x,y,message,labelFontSize = 18,limit=18){
 	r1.strokeWidth = 5;
 	var r2 = rough.rectangle(x, y, limit*labelFontSize/2.5, msgList.length*labelFontSize,3);
 	r2.roughness = 1.0;
+	r2.fillStyle="solid";
+	r2.fill="white";
 	r2.stroke = "black";
 	r2.strokeWidth = 2;
 
-	var tmpY = 0;
+	var tmpX = 5;
+	var tmpY = 20;
 	for (var i =0; i < msgList.length; i++){
 		var tmpMsg = msgList[i];
-		var msgText = new createjs.Text(tmpMsg);
-		msgText.font="bold "+labelFontSize.toString()+"px Indie Flower";
-		msgText.color="black"
-		msgText.x = 5;
-		msgText.y = tmpY;
+		var msgText = rough.createText(tmpMsg,tmpX,tmpY);
 		//container.addChild(msgText);
 		tmpY += labelFontSize;
 		//console.log(tmpMsg)
@@ -235,7 +234,7 @@ function setCharacter(x,y,gest=defaultGest,ori = -1,lineColor="black",lineStroke
 	return container;
 }
 
-function getBubble(x,y,message,msgFontColor="black",msgFontSize = 18,isBold=false,limit = 18){
+function getBubble(rough,x,y,message,msgFontColor="black",msgFontSize = 18,isBold=false,limit = 18){
 	var container = new createjs.Container();
 	container.x = x;
 	container.y = y;
@@ -373,8 +372,7 @@ function render_rough(gest=defaultGest, dist=defaultDist, shad=defaultShad, msgL
 	var rough = new RoughCanvas(document.getElementById('comicCanvas'), 300, 400);
 	
 	var ctx=rough._canvas.getContext("2d");
-	ctx.font="30px xkcd";
-	ctx.fillText("Hello World",0,0);
+	//rough.createText("No!!!",100,100);
 	
 	// Set the shading of the canvas
 	setBackgroundShading(shad);
@@ -410,38 +408,29 @@ function render_rough(gest=defaultGest, dist=defaultDist, shad=defaultShad, msgL
 	
 	// Add message bubble
 	// And draw the lines between bubbles
+	var fontSize = 15;
 	var bubbleA = []
 	var bubbleB = []
 	for (var i = 0;i<msgListA.length;i++){
-		bubbleA.push(getBubble(30, 200-50*(i+1),msgListA[i],"black",18,true));
-		stage.addChild(getBubble(30, 200-50*(i+1),msgListA[i],"white",18,true));
+		bubbleA.push(drawBubble(rough,30, 200-50*(i+1),msgListA[i],"black",fontSize,true));
 	}
-	for (var i = 0;i<bubbleA.length;i++){
-		stage.addChild(bubbleA[i]);
-	}
-	for (var i = 1;i<bubbleA.length;i++){
-		stage.addChild(getContainerLine(bubbleA[i-1].getTransformedBounds(),bubbleA[i].getTransformedBounds()))	
-	}
-	if(bubbleA.length>0){
-		stage.addChild(getContainerLine(bubbleA[bubbleA.length-1].getTransformedBounds(),characterA.children[0].getTransformedBounds()))
+	bubbleA.push({x1:100-dist*20,y1:220});
+	console.log(bubbleA)
+	for (var i = 0;i<bubbleA.length-1;i++){
+		var curve=rough.curve([[bubbleA[i].x2,bubbleA[i].y2],[bubbleA[i+1].x1,bubbleA[i+1].y1]]);
+		curve.stroke = "black";
+		curve.roughness = 1;
 	}
 	
-	var bubbleB = []
 	for (var i = 0;i<msgListB.length;i++){
-		bubbleB.push(getBubble(150, 50*(i+1),msgListB[i],"black",18,true));
-		stage.addChild(getBubble(150, 50*(i+1),msgListB[i],"white",18,true));
+		bubbleB.push(drawBubble(rough,150, 50*(i+1),msgListB[i],"black",fontSize,true));
 	}
-	for (var i = 0;i<bubbleB.length;i++){
-		stage.addChild(bubbleB[i]);
+	bubbleB.push({x1:200+dist*20,y1:220});
+	console.log(bubbleB)
+	for (var i = 0;i<bubbleB.length-1;i++){
+		var curve=rough.curve([[bubbleB[i].x2,bubbleB[i].y2],[bubbleB[i+1].x1,bubbleB[i+1].y1]]);
 	}
-	for (var i = 1;i<bubbleB.length;i++){
-		stage.addChild(getContainerLine(bubbleB[i-1].getTransformedBounds(),bubbleB[i].getTransformedBounds()))	
-	}
-	if(bubbleB.length>0){
-		stage.addChild(getContainerLine(bubbleB[bubbleB.length-1].getTransformedBounds(),characterB.children[0].getTransformedBounds()))
-	}
-	
-	stage.update();
+
 	
 //     .cRect(x1, y1, width, height);
 }
@@ -613,6 +602,19 @@ function drawCharacter(rough,x,y,gest=defaultGest,ori = -1,lineColor="black",lin
 
 }
 
+function drawBubble(rough,x,y,message,msgFontColor="black",msgFontSize = 18,isBold=false,limit = 18){
+	var x1=x,y1=y,x2,y2;
+	// Set message
+	// todo: a little problem in the limit setting
+	var msgList = getMsgSplitList(message, limit);	
+	var tmpX = x;
+	var tmpY = y;
+	for (var i =0; i < msgList.length; i++){
+		var msgText = rough.createText(msgList[i],tmpX,tmpY);
+		tmpY += msgFontSize;
+	}
+	return {x1:x1,y1:y1,x2:tmpX,y2:tmpY};
+}
 
 function switchTextComic(){
 	var elem = document.getElementById("middlePart");

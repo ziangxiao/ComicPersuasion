@@ -3,10 +3,16 @@ scene {
 }
 
 @font-face {
-  font-family: "xkcd";
-  src: url('fonts/xkcd.tff') format('tff'),
-		url('fonts/xkcd.woff') format('woff');
-	   
+  font-family: 'xkcd_Regular';
+  src: url('fonts/xkcd-Regular.otf');
+  font-style: normal;
+}
+@font-face {
+  font-family: 'xkcd';
+  font-style: normal;
+  font-weight: 400;
+  src: url('fonts/xkcd.ttf');
+  
 }
 
 @font-face {
@@ -20,7 +26,7 @@ scene {
 }
 
 .myText{
-	font-family: xkcd;
+	font-family: Coming Soon;
 }
 
 .cmx-scene {
