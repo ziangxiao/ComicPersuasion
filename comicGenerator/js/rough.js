@@ -1860,14 +1860,17 @@ var RoughRectangle = function (_RoughDrawable8) {
 var RoughText = function (_RoughDrawable9) {
   _inherits(RoughText, _RoughDrawable9);
 
-  function RoughText(content, x1, y1) {
+  function RoughText(content, x1, y1, font, fillColor) {
     _classCallCheck(this, RoughText);
 
-    var _this9 = _possibleConstructorReturn(this, (RoughText.__proto__ || Object.getPrototypeOf(RoughText)).call(this, ['content','x1', 'y1']));
+    var _this9 = _possibleConstructorReturn(this, (RoughText.__proto__ || Object.getPrototypeOf(RoughText)).call(this, ['content','x1', 'y1','font','fillColor']));
 
 	_this9.content = content;
     _this9.x1 = x1;
     _this9.y1 = y1;
+	_this9.font= font;
+	_this9.fillColor=fillColor;
+	
     return _this9;
   }
 
@@ -1875,8 +1878,9 @@ var RoughText = function (_RoughDrawable9) {
     key: 'draw',
     value: function draw(ctx) {
       ctx.save();
-	  ctx.font = '15px Coming Soon';
-	  ctx.fillStyle="black"
+	  ctx.font = this.font;
+	  ctx.fillStyle=this.fillColor;
+	  //console.log(this.font);
       ctx.fillText(this.content,this.x1,this.y1);
       ctx.restore();
     }
@@ -2066,8 +2070,8 @@ var RoughCanvas = function () {
     }
   },{
     key: 'createText',
-    value: function createText(content, x, y) {
-      var t = new RoughText(content, x, y);
+    value: function createText(content, x, y, font, fillColor) {
+      var t = new RoughText(content, x, y, font, fillColor);
 	  this.add(t);
       return t;
     }

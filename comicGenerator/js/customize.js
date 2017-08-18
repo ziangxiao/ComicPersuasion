@@ -1,4 +1,7 @@
 //Some default parameters
+var canvasWidth = 300;
+var canvasHight = 400;
+
 var defaultLimit = 20
 // 3 parameters controlling the different levels of elements
 // gest: (neg)-2,-1,0,1,2(pos)
@@ -7,14 +10,17 @@ var defaultDist = 2;
 var defaultShad = 0;
 
 var labelMessage = "One night, your mom tell you...";
-
-var msgA = ["No..."]
+var msgA = ["Yes!!!"]
 var msgB = ["Congrats!","You have reached your goal of exercising three times a week."]
+
+var fontSize = 15;
+
 function load(){
-	var gest = parseInt(document.getElementById("gestArea").value);
+	var gestA = parseInt(document.getElementById("gestAreaA").value);
+	var gestB = parseInt(document.getElementById("gestAreaB").value);
 	var dist = parseFloat(document.getElementById("distArea").value);
 	var shad = parseFloat(document.getElementById("shadArea").value);
-	render_rough(gest,dist,shad,msgA,msgB);
+	render_rough(gestA,gestB,dist,shad,msgA,msgB);
 }
 
 function getMsgSplitList(msg, lengthLimit){
@@ -42,13 +48,27 @@ function getMsgSplitList(msg, lengthLimit){
 	return msgList;
 }		
 
-function setBackgroundShading(shad){
+function setBackgroundShading(rough,shad){
 	var canvas = document.getElementById("comicCanvas");
 	// Calculate the color
 	// Input is from 0 to 3
-	var colorNum = Math.floor(((3 - parseFloat(shad))*255/3)).toString();
-	console.log(colorNum)
-	canvas.style.backgroundColor = "rgb("+colorNum+","+colorNum+","+colorNum+")";
+	var colorNum = "";
+	if(shad>3){
+		colorNum = "3";
+	}
+	else if(shad<0){
+		colorNum = "0";
+	}
+	else{
+		colorNum = Math.floor(((3 - parseFloat(shad))*255/3)).toString();
+	}	
+	//canvas.style.backgroundColor = "rgb("+colorNum+","+colorNum+","+colorNum+")";
+	var bg = rough.rectangle(0, 0, canvasWidth, canvasHight);
+	bg.fillStyle="solid";
+	bg.fill="rgb("+colorNum+","+colorNum+","+colorNum+")";
+	bg.strokeWidth = 0;
+	bg.stroke = "rgb("+colorNum+","+colorNum+","+colorNum+")";
+	bg.roughness = 0;
 }
 
 function setInfoLabel(rough,x,y,message,labelFontSize = 18,limit=18){
@@ -56,333 +76,54 @@ function setInfoLabel(rough,x,y,message,labelFontSize = 18,limit=18){
 	// todo: a little problem in the limit setting
 	msgList = getMsgSplitList(message, limit);
 	labelHeight = labelFontSize * msgList.length +5;
-	var r1 = rough.rectangle(x, y, limit*labelFontSize/2.5, msgList.length*labelFontSize,3);
+	var r1 = rough.rectangle(x, y, limit*labelFontSize/2.5, labelHeight,3);
 	r1.roughness = 1.0;
 	r1.stroke = "white";
 	r1.strokeWidth = 5;
-	var r2 = rough.rectangle(x, y, limit*labelFontSize/2.5, msgList.length*labelFontSize,3);
+	var r2 = rough.rectangle(x, y, limit*labelFontSize/2.5, labelHeight,3);
 	r2.roughness = 1.0;
 	r2.fillStyle="solid";
 	r2.fill="white";
 	r2.stroke = "black";
 	r2.strokeWidth = 2;
 
-	var tmpX = 5;
-	var tmpY = 20;
+	var tmpX = x+3;
+	var tmpY = y + labelFontSize;
 	for (var i =0; i < msgList.length; i++){
 		var tmpMsg = msgList[i];
-		var msgText = rough.createText(tmpMsg,tmpX,tmpY);
-		//container.addChild(msgText);
+		var msgText = rough.createText(tmpMsg,tmpX,tmpY,"bold 15px Coming Soon","black");
 		tmpY += labelFontSize;
-		//console.log(tmpMsg)
 	}
+	tmpY -= labelFontSize;
 }
 
-// x, y determines the position of the container
-// gest has 3 values:0,1,2
-// ori is 1(the character is facing left) or -1
-function setCharacter(x,y,gest=defaultGest,ori = -1,lineColor="black",lineStroke=2){
-	var container = new createjs.Container();
-	container.x = x;
-	container.y = y;
-	// Points for the head
-	var headPointX, headPointY, headRadius;
-	// bodyPointA is also the start point of the arms, bodyPointC is the start point of the legs
-	var bodyPointAX,bodyPointAY, bodyPointBX,bodyPointBY, bodyPointCX,bodyPointCY;
-	// Arms
-	var leftArmPointAX,leftArmPointAY, leftArmPointBX,leftArmPointBY;
-	var rightArmPointAX,rightArmPointAY, rightArmPointBX,rightArmPointBY;
-	// Legs
-	var leftLegPointAX,leftLegPointAY, leftLegPointBX,leftLegPointBY;
-	var rightLegPointAX,rightLegPointAY, rightLegPointBX,rightLegPointBY;
-	
-	switch(gest){
-		case -2:
-			//head
-			headPointX=0; headPointY=0; headRadius=20;
-			//body
-			bodyPointAX=headPointX+ori*16;bodyPointAY=headPointY+headRadius-8; 
-			bodyPointBX=bodyPointAX+ori*10;bodyPointBY=bodyPointAY+15;
-			bodyPointCX=bodyPointAX+ori*10;bodyPointCY=bodyPointAY+40;
-			// Arms
-			leftArmPointAX=bodyPointAX+ori*13;leftArmPointAY=bodyPointAY+15;
-			leftArmPointBX=leftArmPointAX;leftArmPointBY=leftArmPointAY+20;
-			rightArmPointAX=bodyPointAX+ori*(-10);rightArmPointAY=bodyPointAY+20;
-			rightArmPointBX=rightArmPointAX+ori*(-20);rightArmPointBY=rightArmPointAY-20;
-			// Legs
-			leftLegPointAX=bodyPointCX-ori*16;leftLegPointAY=bodyPointCY+20;
-			leftLegPointBX=leftLegPointAX+ori*30;leftLegPointBY=leftLegPointAY+5;
-			rightLegPointAX=bodyPointCX-ori*8;rightLegPointAY=bodyPointCY+16;
-			rightLegPointBX=rightLegPointAX+ori*28;rightLegPointBY=rightLegPointAY+3;
-			break;
-		case -1:
-			headPointX=0; headPointY=0; headRadius=20;
-			//body
-			bodyPointAX=headPointX+ori*12;bodyPointAY=headPointY+headRadius-4; 
-			bodyPointBX=bodyPointAX+ori*8;bodyPointBY=bodyPointAY+18;
-			bodyPointCX=bodyPointAX+ori*8;bodyPointCY=bodyPointAY+40;
-			// Arms
-			leftArmPointAX=bodyPointAX-ori*8;leftArmPointAY=bodyPointAY+18;
-			leftArmPointBX=leftArmPointAX-ori*3;leftArmPointBY=leftArmPointAY+25;
-			rightArmPointAX=bodyPointAX+ori*(-2);rightArmPointAY=bodyPointAY+20;
-			rightArmPointBX=rightArmPointAX+ori*(-2);rightArmPointBY=rightArmPointAY+25;
-			// Legs
-			leftLegPointAX=bodyPointCX+ori*5;leftLegPointAY=bodyPointCY+20;
-			leftLegPointBX=leftLegPointAX+ori*3;leftLegPointBY=leftLegPointAY+20;
-			rightLegPointAX=bodyPointCX-ori*8;rightLegPointAY=bodyPointCY+16;
-			rightLegPointBX=rightLegPointAX-ori*3;rightLegPointBY=rightLegPointAY+20;
-			break;
-		case 0:
-			headPointX=0; headPointY=0; headRadius=20;
-			//body
-			bodyPointAX=headPointX;bodyPointAY=headPointY+headRadius; 
-			bodyPointBX=bodyPointAX+ori*3;bodyPointBY=bodyPointAY+18;
-			bodyPointCX=bodyPointAX+ori*3;bodyPointCY=bodyPointAY+40;
-			// Arms
-			leftArmPointAX=bodyPointAX-ori*3;leftArmPointAY=bodyPointAY+18;
-			leftArmPointBX=leftArmPointAX-ori*3;leftArmPointBY=leftArmPointAY+25;
-			rightArmPointAX=bodyPointAX+ori*7;rightArmPointAY=bodyPointAY+20;
-			rightArmPointBX=rightArmPointAX+ori*7;rightArmPointBY=rightArmPointAY+25;
-			// Legs
-			leftLegPointAX=bodyPointCX+ori*5;leftLegPointAY=bodyPointCY+20;
-			leftLegPointBX=leftLegPointAX+ori*3;leftLegPointBY=leftLegPointAY+20;
-			rightLegPointAX=bodyPointCX-ori*5;rightLegPointAY=bodyPointCY+20;
-			rightLegPointBX=rightLegPointAX-ori*3;rightLegPointBY=rightLegPointAY+20;
-			break;
-		case 1:
-			headPointX=0; headPointY=0; headRadius=20;
-			//body
-			bodyPointAX=headPointX-ori*12;bodyPointAY=headPointY+headRadius-4;
-			bodyPointBX=bodyPointAX-ori*3;bodyPointBY=bodyPointAY+18;
-			bodyPointCX=bodyPointAX-ori*3;bodyPointCY=bodyPointAY+40;
-			// Arms
-			leftArmPointAX=bodyPointAX-ori*20;leftArmPointAY=bodyPointAY-5;
-			leftArmPointBX=leftArmPointAX-ori*3;leftArmPointBY=leftArmPointAY-25;
-			rightArmPointAX=bodyPointAX+ori*18;rightArmPointAY=bodyPointAY+18;
-			rightArmPointBX=rightArmPointAX+ori*7;rightArmPointBY=rightArmPointAY+25;
-			// Legs
-			leftLegPointAX=bodyPointCX+ori*15;leftLegPointAY=bodyPointCY+20;
-			leftLegPointBX=leftLegPointAX+ori*3;leftLegPointBY=leftLegPointAY+20;
-			rightLegPointAX=bodyPointCX-ori*15;rightLegPointAY=bodyPointCY+20;
-			rightLegPointBX=rightLegPointAX-ori*3;rightLegPointBY=rightLegPointAY+20;
-			break;
-		case 2:
-		    headPointX=0; headPointY=0; headRadius=20;
-			//body
-			bodyPointAX=headPointX-ori*16;bodyPointAY=headPointY+headRadius-8;
-			bodyPointBX=bodyPointAX-ori*13;bodyPointBY=bodyPointAY+25;
-			bodyPointCX=bodyPointAX-ori*3;bodyPointCY=bodyPointAY+50;
-			// Arms
-			leftArmPointAX=bodyPointAX-ori*20;leftArmPointAY=bodyPointAY-5;
-			leftArmPointBX=leftArmPointAX-ori*3;leftArmPointBY=leftArmPointAY-25;
-			rightArmPointAX=bodyPointAX+ori*22;rightArmPointAY=bodyPointAY+18;
-			rightArmPointBX=rightArmPointAX+ori*27;rightArmPointBY=rightArmPointAY-25;
-			// Legs
-			leftLegPointAX=bodyPointCX+ori*10;leftLegPointAY=bodyPointCY+28;
-			leftLegPointBX=leftLegPointAX+ori*25;leftLegPointBY=leftLegPointAY+5;
-			rightLegPointAX=bodyPointCX-ori*25;rightLegPointAY=bodyPointCY+10;
-			rightLegPointBX=rightLegPointAX-ori*3;rightLegPointBY=rightLegPointAY+20;
-			break;
-		default:
-			headPointX=0; headPointY=0; headRadius=20;
-			//body
-			bodyPointAX=headPointX;bodyPointAY=headPointY+headRadius; 
-			bodyPointBX=bodyPointAX+ori*3;bodyPointBY=bodyPointAY+18;
-			bodyPointCX=bodyPointAX+ori*3;bodyPointCY=bodyPointAY+40;
-			// Arms
-			leftArmPointAX=bodyPointAX-ori*3;leftArmPointAY=bodyPointAY+18;
-			leftArmPointBX=leftArmPointAX-ori*3;leftArmPointBY=leftArmPointAY+25;
-			rightArmPointAX=bodyPointAX+ori*7;rightArmPointAY=bodyPointAY+20;
-			rightArmPointBX=rightArmPointAX+ori*7;rightArmPointBY=rightArmPointAY+25;
-			// Legs
-			leftLegPointAX=bodyPointCX+ori*5;leftLegPointAY=bodyPointCY+20;
-			leftLegPointBX=leftLegPointAX+ori*3;leftLegPointBY=leftLegPointAY+20;
-			rightLegPointAX=bodyPointCX-ori*5;rightLegPointAY=bodyPointCY+20;
-			rightLegPointBX=rightLegPointAX-ori*3;rightLegPointBY=rightLegPointAY+20;
-			break;
-	}
-
-	var circle = new createjs.Shape();
-	circle.graphics.setStrokeStyle(lineStroke,2).beginStroke(lineColor);
-	circle.graphics.drawCircle(headPointX, headPointY, headRadius);
-	circle.setBounds(x+headPointX-headRadius, y+headPointY-headRadius, headRadius*2, headRadius*2);
-	container.addChild(circle);
-	
-	var bodyLine = new createjs.Shape();
-	container.addChild(bodyLine);
-	bodyLine.graphics.setStrokeStyle(lineStroke,1,1).beginStroke(lineColor);
-	bodyLine.graphics.moveTo(bodyPointAX, bodyPointAY);
-	// Body
-	bodyLine.graphics.quadraticCurveTo(bodyPointBX,bodyPointBY, bodyPointCX,bodyPointCY);
-	// Arms
-	bodyLine.graphics.moveTo(bodyPointAX, bodyPointAY);
-	bodyLine.graphics.lineTo(leftArmPointAX,leftArmPointAY);
-	bodyLine.graphics.lineTo(leftArmPointBX,leftArmPointBY);
-	bodyLine.graphics.moveTo(bodyPointAX, bodyPointAY);
-	bodyLine.graphics.lineTo(rightArmPointAX,rightArmPointAY);
-	bodyLine.graphics.lineTo(rightArmPointBX,rightArmPointBY);
-	// Legs
-	bodyLine.graphics.moveTo(bodyPointCX, bodyPointCY);
-	bodyLine.graphics.lineTo(leftLegPointAX,leftLegPointAY);
-	bodyLine.graphics.lineTo(leftLegPointBX,leftLegPointBY);
-	bodyLine.graphics.moveTo(bodyPointCX, bodyPointCY);
-	bodyLine.graphics.lineTo(rightLegPointAX,rightLegPointAY);
-	bodyLine.graphics.lineTo(rightLegPointBX,rightLegPointBY);
-	// Stop drawing this line
-	bodyLine.graphics.endStroke();
-	
-	return container;
+function drawBubbleCurve(rough, x0, y0,len0, x1, y1, len1){
+	var curve=rough.curve([[x0+len0*fontSize/2/2,y0+5],
+						[x0+len0*fontSize/2/2+(Math.random()-0.5)*len0*fontSize/2/2,y0+(y1-y0)/3],
+						[x1+len1*fontSize/2/2+(Math.random()-0.5)*len1,y0+(y1-y0)*2/3],
+						[x1+len1*fontSize/2/2,y1-8]]);
+		curve.stroke = "black";
+		curve.roughness = 0.5;
 }
 
-function getBubble(rough,x,y,message,msgFontColor="black",msgFontSize = 18,isBold=false,limit = 18){
-	var container = new createjs.Container();
-	container.x = x;
-	container.y = y;
-	
-	// Set message
-	// todo: a little problem in the limit setting
-	msgList = getMsgSplitList(message, limit);
-	// Draw background
-	var r2 = rough.rectangle(5, 0, limit*msgFontSize/2.5, msgList.length*msgFontSize,3);
-	r2.roughness = 1.0;
-	r2.stroke = "black";
-	r2.strokeWidth = 2;
-	
-	var tmpY = 0;
-	for (var i =0; i < msgList.length; i++){
-		var tmpMsg = msgList[i];
-		var msgText = new createjs.Text(tmpMsg);
-		if(isBold){
-			msgText.font= "bold "+msgFontSize.toString()+"px Comic Sans MS";
-		}
-		else{
-			msgText.font= msgFontSize.toString()+"px Indie Flower";
-		}
-		msgText.color=msgFontColor;
-		msgText.x = 5;
-		msgText.y = tmpY;
-		//container.addChild(msgText);
-		tmpY += labelFontSize;
-		//console.log(tmpMsg)
-	}
-	
-}
-
-function getContainerLine(rectA, rectB){
-	var ptAX = rectA.x + rectA.width/2;
-	var ptAY = rectA.y + rectA.height;
-	var ptBX = rectB.x + rectB.width/2;
-	var ptBY = rectB.y;
-	
-	var line = new createjs.Shape();
-	line.graphics.setStrokeStyle(2,1,1).beginStroke("black");
-	line.graphics.moveTo(ptAX, ptAY+5);
-	line.graphics.quadraticCurveTo(ptBX,(ptAY+ptBY)/2,ptBX,ptBY-5);
-	return line;
-}
-
-function render(gest=defaultGest, dist=defaultDist, shad=defaultShad, msgListA, msgListB){
-	console.log(gest)
-	// Get message from text area
-	var msgContent = document.getElementById("messageArea").value;
-	document.getElementById("textPart").innerHTML = msgContent;
-	
-	
-	
-	// Set the shading of the canvas
-	setBackgroundShading(shad);
-	
-	// Draw the picture on the canvas with the creatjs
-	var stage = new createjs.Stage("comicCanvas");
-	
-	// Draw the border
-	var border = new createjs.Shape();
-	border.graphics.setStrokeStyle(2).beginStroke("black");
-	border.graphics.drawRect(15, 20, 265, 370);
-	stage.addChild(border);
-	
-	// Draw the info label
-	var infoLabel = setInfoLabel(10,10,labelMessage);
-	stage.addChild(infoLabel);
-	
-	// Draw the horizon
-	var line = new createjs.Shape();
-	stage.addChild(line);
-	line.graphics.setStrokeStyle(2).beginStroke("black");
-	line.graphics.moveTo(15, 340);
-	line.graphics.lineTo(280,310);
-	
-	// Draw the character
-	var characterA1 = setCharacter(100-dist*20,250,gest,-1,"white",5);
-	var characterB1 = setCharacter(200+dist*20,250,0,1,"white",5);
-	stage.addChild(characterA1);
-	stage.addChild(characterB1);
-	var characterA = setCharacter(100-dist*20,250,gest,-1);
-	var characterB = setCharacter(200+dist*20,250,0,1);
-	// comicjs
-	var rough = new RoughCanvas(document.getElementById('comicCanvas'), 300, 400);
-	drawCharacter(rough,100-dist*20,250,gest,-1);
-	drawCharacter(rough,200+dist*20,250,0,1);
-	
-	// Add message bubble
-	// And draw the lines between bubbles
-	var bubbleA = []
-	var bubbleB = []
-	for (var i = 0;i<msgListA.length;i++){
-		bubbleA.push(getBubble(30, 200-50*(i+1),msgListA[i],"black",18,true));
-		stage.addChild(getBubble(30, 200-50*(i+1),msgListA[i],"white",18,true));
-	}
-	for (var i = 0;i<bubbleA.length;i++){
-		stage.addChild(bubbleA[i]);
-	}
-	for (var i = 1;i<bubbleA.length;i++){
-		stage.addChild(getContainerLine(bubbleA[i-1].getTransformedBounds(),bubbleA[i].getTransformedBounds()))	
-	}
-	if(bubbleA.length>0){
-		stage.addChild(getContainerLine(bubbleA[bubbleA.length-1].getTransformedBounds(),characterA.children[0].getTransformedBounds()))
-	}
-	
-	var bubbleB = []
-	for (var i = 0;i<msgListB.length;i++){
-		bubbleB.push(getBubble(150, 50*(i+1),msgListB[i],"black",18,true));
-		stage.addChild(getBubble(150, 50*(i+1),msgListB[i],"white",18,true));
-	}
-	for (var i = 0;i<bubbleB.length;i++){
-		stage.addChild(bubbleB[i]);
-	}
-	for (var i = 1;i<bubbleB.length;i++){
-		stage.addChild(getContainerLine(bubbleB[i-1].getTransformedBounds(),bubbleB[i].getTransformedBounds()))	
-	}
-	if(bubbleB.length>0){
-		stage.addChild(getContainerLine(bubbleB[bubbleB.length-1].getTransformedBounds(),characterB.children[0].getTransformedBounds()))
-	}
-	
-	stage.update();
-	
-//     .cRect(x1, y1, width, height);
-}
-
-function render_rough(gest=defaultGest, dist=defaultDist, shad=defaultShad, msgListA, msgListB){
-	console.log(gest)
+function render_rough(gestA=defaultGest,gestB=defaultGest,dist=defaultDist, shad=defaultShad, msgListA, msgListB){
 	// Get message from text area
 	var msgContent = document.getElementById("messageArea").value;
 	document.getElementById("textPart").innerHTML = msgContent;
 	
 	// comicjs
-	var rough = new RoughCanvas(document.getElementById('comicCanvas'), 300, 400);
-	
-	var ctx=rough._canvas.getContext("2d");
-	//rough.createText("No!!!",100,100);
+	var rough = new RoughCanvas(document.getElementById('comicCanvas'), canvasWidth, canvasHight);
 	
 	// Set the shading of the canvas
-	setBackgroundShading(shad);
+	setBackgroundShading(rough,shad);
 	
 	// Draw the border
-	var r1 = rough.rectangle(15, 20, 265, 370);
+	var borderDist = 15;
+	var r1 = rough.rectangle(borderDist, borderDist, canvasWidth-borderDist*2, canvasHight-borderDist*2);
 	r1.stroke = "white";
 	r1.strokeWidth = 5;
 	r1.roughness = 0;
-	var r2 = rough.rectangle(15, 20, 265, 370);
+	var r2 = rough.rectangle(borderDist, borderDist, canvasWidth-borderDist*2, canvasHight-borderDist*2);
 	r2.roughness = 1.0;
 	r2.stroke = "black";
 	r2.strokeWidth = 2;
@@ -401,38 +142,47 @@ function render_rough(gest=defaultGest, dist=defaultDist, shad=defaultShad, msgL
 	line2.roughness = 1;
 	
 	// Draw the character
-	drawCharacter(rough,100-dist*20,250,gest,-1,"white",5);
-	drawCharacter(rough,200+dist*20,250,0,1,"white",5);
-	drawCharacter(rough,100-dist*20,250,gest,-1,"black",2,0.5);
-	drawCharacter(rough,200+dist*20,250,0,1,"black",2,0.5);
+	drawCharacter(rough,canvasWidth/2-50-dist*20,250,gestA,-1,"white",5);
+	drawCharacter(rough,canvasWidth/2+50+dist*20,250,gestB,1,"white",5);
+	
+	drawCharacter(rough,canvasWidth/2-50-dist*20,250,gestA,-1,"black",2,0.5);
+	drawCharacter(rough,canvasWidth/2+50+dist*20,250,gestB,1,"black",2,0.5);
 	
 	// Add message bubble
 	// And draw the lines between bubbles
-	var fontSize = 15;
 	var bubbleA = []
 	var bubbleB = []
 	for (var i = 0;i<msgListA.length;i++){
-		bubbleA.push(drawBubble(rough,30, 200-50*(i+1),msgListA[i],"black",fontSize,true));
+		drawBubble(rough,30-2, 200-50*(i+1),msgListA[i],"white","bold 15px Coming Soon",true)
+		drawBubble(rough,30+2, 200-50*(i+1),msgListA[i],"white","bold 15px Coming Soon",true)
+		drawBubble(rough,30, 200-50*(i+1)-2,msgListA[i],"white","bold 15px Coming Soon",true)
+		drawBubble(rough,30, 200-50*(i+1)+2,msgListA[i],"white","bold 15px Coming Soon",true)
+		drawBubble(rough,30-2, 200-50*(i+1)-2,msgListA[i],"white","bold 15px Coming Soon",true)
+		drawBubble(rough,30+2, 200-50*(i+1)+2,msgListA[i],"white","bold 15px Coming Soon",true)
+		drawBubble(rough,30-2, 200-50*(i+1)+2,msgListA[i],"white","bold 15px Coming Soon",true)
+		drawBubble(rough,30+2, 200-50*(i+1)-2,msgListA[i],"white","bold 15px Coming Soon",true)
+		bubbleA.push(drawBubble(rough,30, 200-50*(i+1),msgListA[i],"black","bold 15px Coming Soon",true));
 	}
-	bubbleA.push({x1:100-dist*20,y1:220});
-	console.log(bubbleA)
+	bubbleA.push({x1:100-dist*20,y1:230,len1:4});
 	for (var i = 0;i<bubbleA.length-1;i++){
-		var curve=rough.curve([[bubbleA[i].x2,bubbleA[i].y2],[bubbleA[i+1].x1,bubbleA[i+1].y1]]);
-		curve.stroke = "black";
-		curve.roughness = 1;
+		drawBubbleCurve(rough, bubbleA[i].x2,bubbleA[i].y2, bubbleA[i].len2, bubbleA[i+1].x1,bubbleA[i+1].y1,bubbleA[i+1].len1);
 	}
 	
 	for (var i = 0;i<msgListB.length;i++){
-		bubbleB.push(drawBubble(rough,150, 50*(i+1),msgListB[i],"black",fontSize,true));
+		drawBubble(rough,150-2, 50*(i+1),msgListB[i],"white","bold 15px Coming Soon",true)
+		drawBubble(rough,150+2, 50*(i+1),msgListB[i],"white","bold 15px Coming Soon",true)
+		drawBubble(rough,150, 50*(i+1)-2,msgListB[i],"white","bold 15px Coming Soon",true)
+		drawBubble(rough,150, 50*(i+1)+2,msgListB[i],"white","bold 15px Coming Soon",true)
+		drawBubble(rough,150-2, 50*(i+1)-2,msgListB[i],"white","bold 15px Coming Soon",true)
+		drawBubble(rough,150+2, 50*(i+1)+2,msgListB[i],"white","bold 15px Coming Soon",true)
+		drawBubble(rough,150+2, 50*(i+1)-2,msgListB[i],"white","bold 15px Coming Soon",true)
+		drawBubble(rough,150-2, 50*(i+1)+2,msgListB[i],"white","bold 15px Coming Soon",true)
+		bubbleB.push(drawBubble(rough,150, 50*(i+1),msgListB[i],"black","bold 15px Coming Soon",true));
 	}
-	bubbleB.push({x1:200+dist*20,y1:220});
-	console.log(bubbleB)
+	bubbleB.push({x1:200+dist*20,y1:230,len1:4});
 	for (var i = 0;i<bubbleB.length-1;i++){
-		var curve=rough.curve([[bubbleB[i].x2,bubbleB[i].y2],[bubbleB[i+1].x1,bubbleB[i+1].y1]]);
+		drawBubbleCurve(rough,bubbleB[i].x2,bubbleB[i].y2,bubbleB[i].len2,bubbleB[i+1].x1,bubbleB[i+1].y1,bubbleB[i+1].len1);
 	}
-
-	
-//     .cRect(x1, y1, width, height);
 }
 
 function drawCharacter(rough,x,y,gest=defaultGest,ori = -1,lineColor="black",lineStroke=2,roughness=0){
@@ -451,7 +201,7 @@ function drawCharacter(rough,x,y,gest=defaultGest,ori = -1,lineColor="black",lin
 	switch(gest){
 		case -2:
 			//head
-			headPointX=0; headPointY=0; headRadius=20;
+			headPointX=x; headPointY=y; headRadius=20;
 			//body
 			bodyPointAX=headPointX+ori*16;bodyPointAY=headPointY+headRadius-8; 
 			bodyPointBX=bodyPointAX+ori*10;bodyPointBY=bodyPointAY+15;
@@ -468,7 +218,7 @@ function drawCharacter(rough,x,y,gest=defaultGest,ori = -1,lineColor="black",lin
 			rightLegPointBX=rightLegPointAX+ori*28;rightLegPointBY=rightLegPointAY+3;
 			break;
 		case -1:
-			headPointX=0; headPointY=0; headRadius=20;
+			headPointX=x; headPointY=y; headRadius=20;
 			//body
 			bodyPointAX=headPointX+ori*12;bodyPointAY=headPointY+headRadius-4; 
 			bodyPointBX=bodyPointAX+ori*8;bodyPointBY=bodyPointAY+18;
@@ -519,10 +269,10 @@ function drawCharacter(rough,x,y,gest=defaultGest,ori = -1,lineColor="black",lin
 			rightLegPointBX=rightLegPointAX-ori*3;rightLegPointBY=rightLegPointAY+20;
 			break;
 		case 2:
-		    headPointX=0; headPointY=0; headRadius=20;
+		    headPointX=x; headPointY=y; headRadius=20;
 			//body
 			bodyPointAX=headPointX-ori*16;bodyPointAY=headPointY+headRadius-8;
-			bodyPointBX=bodyPointAX-ori*13;bodyPointBY=bodyPointAY+25;
+			bodyPointBX=bodyPointAX-ori*8;bodyPointBY=bodyPointAY+25;
 			bodyPointCX=bodyPointAX-ori*3;bodyPointCY=bodyPointAY+50;
 			// Arms
 			leftArmPointAX=bodyPointAX-ori*20;leftArmPointAY=bodyPointAY-5;
@@ -536,7 +286,7 @@ function drawCharacter(rough,x,y,gest=defaultGest,ori = -1,lineColor="black",lin
 			rightLegPointBX=rightLegPointAX-ori*3;rightLegPointBY=rightLegPointAY+20;
 			break;
 		default:
-			headPointX=0; headPointY=0; headRadius=20;
+			headPointX=x; headPointY=y; headRadius=20;
 			//body
 			bodyPointAX=headPointX;bodyPointAY=headPointY+headRadius; 
 			bodyPointBX=bodyPointAX+ori*3;bodyPointBY=bodyPointAY+18;
@@ -602,18 +352,21 @@ function drawCharacter(rough,x,y,gest=defaultGest,ori = -1,lineColor="black",lin
 
 }
 
-function drawBubble(rough,x,y,message,msgFontColor="black",msgFontSize = 18,isBold=false,limit = 18){
-	var x1=x,y1=y,x2,y2;
+function drawBubble(rough,x,y,message,msgFontColor="black",msgFont = "15px",isBold=false,limit = 18){
+	var x1,y1,x2,y2;
 	// Set message
 	// todo: a little problem in the limit setting
 	var msgList = getMsgSplitList(message, limit);	
 	var tmpX = x;
-	var tmpY = y;
+	var tmpY = y + fontSize;
+	x1 = tmpX;
+	y1 = tmpY;
 	for (var i =0; i < msgList.length; i++){
-		var msgText = rough.createText(msgList[i],tmpX,tmpY);
-		tmpY += msgFontSize;
+		var msgText = rough.createText(msgList[i],tmpX,tmpY,msgFont,msgFontColor);
+		tmpY += fontSize;
 	}
-	return {x1:x1,y1:y1,x2:tmpX,y2:tmpY};
+	tmpY -= fontSize;
+	return {x1:x1,y1:y1,len1:msgList[0].length,x2:tmpX,y2:tmpY,len2:msgList[msgList.length-1].length};
 }
 
 function switchTextComic(){
