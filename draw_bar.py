@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt; plt.rcdefaults()
 import numpy as np
 import matplotlib.pyplot as plt
 import pymc3 as pm
+import seaborn as sns
 
 '''
 objects = ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10')
@@ -17,16 +18,17 @@ plt.ylabel('Freq')
 plt.title('Score Distribution')
 '''
 s = np.random.uniform(-5,5,1000)
-count, bins, ignored = plt.hist(s, 15, normed=True)
-plt.plot(bins, np.ones_like(bins), linewidth=2, color='r')
-with pymc3.Model():
-    mu = pm.Normal('mu', 0, 1)
-    sigma = 1.
-    returns = pm.Normal('returns', mu=mu, sd=sigma, observed=observed_data)
-
-    step = pm.NUTS()
-    trace = pm.sample(15000, step)
-
-sns.distplot(trace[-5000:]['mu'], label='PyMC3');
-plt.legend()
-plt.show()
+print (s)
+# count, bins, ignored = plt.hist(s, 15, normed=True)
+# plt.plot(bins, np.ones_like(bins), linewidth=2, color='r')
+# with pm.Model():
+#     mu = pm.Normal('mu', 0, 1)
+#     sigma = 1.
+#     returns = pm.Normal('returns', mu=mu, sd=sigma, observed=s)
+#
+#     step = pm.NUTS()
+#     trace = pm.sample(15000, step)
+#
+# sns.distplot(trace[-5000:]['mu'], label='PyMC3');
+# plt.legend()
+# plt.show()
