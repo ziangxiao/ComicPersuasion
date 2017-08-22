@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <head>
-<link rel="stylesheet" href="css/scene.css">
 <script type="text/javascript" src="js/customize.js"></script>
 <script src="https://code.createjs.com/easeljs-0.8.2.min.js"></script>
 <script src="http://hongru.github.io/proj/canvas2image/canvas2image.js"></script>
 <script src="js/comic.min.js"></script>
 <script type="text/javascript" src="js/rough.js"></script>
 <!-- fonts -->
+<!--link rel="stylesheet" href="http://localhost:5000/xkcd/"-->
+<link rel="stylesheet" media="screen" href="https://fontlibrary.org/face/humor-sans" type="text/css"/>
+<link href="css/scene.css" rel="stylesheet">
+<link rel="stylesheet" media="screen" href="https://fontlibrary.org/face/ruji-s-handwriting-font-v-2-0" type="text/css"/>
 <link href="https://fonts.googleapis.com/css?family=Just+Me+Again+Down+Here" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Slackey" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Coming+Soon" rel="stylesheet">
@@ -39,8 +42,11 @@
 	</table>
 	
 	<div>Edit Area
-	<div>
-		<textarea id="messageArea">Your exercise activity is in the top 20% of all your friends.</textarea>
+	<div >
+		<textarea id="messageArea" width="100px" height="50px">{mark:"B",content:"Congrats!"},
+{mark:"B",content:"You have reached your goal of exercising three times a week."},
+{mark:"A",content:"Yes!!!"}</textarea>
+		<br>
 		gestA
 		<textarea id="gestAreaA">1</textarea>
 		gestB
@@ -54,7 +60,6 @@
 		<button type="button" onclick="saveCanvas()">Save</button>
 	</div>
 	</div>
-	<canvas id="paper" width="300px" height="400px" class="myText"></canvas>
   <image id="theimage"></image>
   </body>
 

@@ -1,6 +1,7 @@
 //Some default parameters
 var canvasWidth = 300;
 var canvasHight = 400;
+var borderDist = 15;
 
 var defaultLimit = 20
 // 3 parameters controlling the different levels of elements
@@ -9,18 +10,28 @@ var defaultGest = 1;
 var defaultDist = 2;
 var defaultShad = 0;
 
-var labelMessage = "One night, your mom tell you...";
-var msgA = ["Yes!!!"]
-var msgB = ["Congrats!","You have reached your goal of exercising three times a week."]
+var labelMessage = "ONE DAY, YOUR FRIEND TELLS YOU...";
 
 var fontSize = 15;
+
+// List of all the message pieces in the format of {mark:"A",content:"content"}
+var msgTotalList = [];
 
 function load(){
 	var gestA = parseInt(document.getElementById("gestAreaA").value);
 	var gestB = parseInt(document.getElementById("gestAreaB").value);
 	var dist = parseFloat(document.getElementById("distArea").value);
 	var shad = parseFloat(document.getElementById("shadArea").value);
-	render_rough(gestA,gestB,dist,shad,msgA,msgB);
+	// Get message from text area
+	var msgContent = document.getElementById("messageArea").value;
+	var msgObject = eval('[' + msgContent + ']');
+	for (i in msgObject)
+	{
+	   msgTotalList.push(msgObject[i]);
+	   document.getElementById("textPart").innerHTML += msgObject[i].content+"<br>";
+	}
+	
+	render_rough(gestA,gestB,dist,shad);
 }
 
 function getMsgSplitList(msg, lengthLimit){
@@ -71,16 +82,16 @@ function setBackgroundShading(rough,shad){
 	bg.roughness = 0;
 }
 
-function setInfoLabel(rough,x,y,message,labelFontSize = 18,limit=18){
+function setInfoLabel(rough,x,y,message,labelFontSize = 15,limit=18){
 	// Calculate label height and width	
 	// todo: a little problem in the limit setting
 	msgList = getMsgSplitList(message, limit);
 	labelHeight = labelFontSize * msgList.length +5;
-	var r1 = rough.rectangle(x, y, limit*labelFontSize/2.5, labelHeight,3);
+	var r1 = rough.rectangle(x, y, limit*labelFontSize/2, labelHeight,3);
 	r1.roughness = 1.0;
 	r1.stroke = "white";
 	r1.strokeWidth = 5;
-	var r2 = rough.rectangle(x, y, limit*labelFontSize/2.5, labelHeight,3);
+	var r2 = rough.rectangle(x, y, limit*labelFontSize/2, labelHeight,3);
 	r2.roughness = 1.0;
 	r2.fillStyle="solid";
 	r2.fill="white";
@@ -91,7 +102,7 @@ function setInfoLabel(rough,x,y,message,labelFontSize = 18,limit=18){
 	var tmpY = y + labelFontSize;
 	for (var i =0; i < msgList.length; i++){
 		var tmpMsg = msgList[i];
-		var msgText = rough.createText(tmpMsg,tmpX,tmpY,"bold 15px Coming Soon","black");
+		var msgText = rough.createText(tmpMsg,tmpX,tmpY,"bold 15px HumorSansRegular","black");
 		tmpY += labelFontSize;
 	}
 	tmpY -= labelFontSize;
@@ -106,11 +117,7 @@ function drawBubbleCurve(rough, x0, y0,len0, x1, y1, len1){
 		curve.roughness = 0.5;
 }
 
-function render_rough(gestA=defaultGest,gestB=defaultGest,dist=defaultDist, shad=defaultShad, msgListA, msgListB){
-	// Get message from text area
-	var msgContent = document.getElementById("messageArea").value;
-	document.getElementById("textPart").innerHTML = msgContent;
-	
+function render_rough(gestA=defaultGest,gestB=defaultGest,dist=defaultDist, shad=defaultShad){
 	// comicjs
 	var rough = new RoughCanvas(document.getElementById('comicCanvas'), canvasWidth, canvasHight);
 	
@@ -118,7 +125,7 @@ function render_rough(gestA=defaultGest,gestB=defaultGest,dist=defaultDist, shad
 	setBackgroundShading(rough,shad);
 	
 	// Draw the border
-	var borderDist = 15;
+	
 	var r1 = rough.rectangle(borderDist, borderDist, canvasWidth-borderDist*2, canvasHight-borderDist*2);
 	r1.stroke = "white";
 	r1.strokeWidth = 5;
@@ -142,44 +149,58 @@ function render_rough(gestA=defaultGest,gestB=defaultGest,dist=defaultDist, shad
 	line2.roughness = 1;
 	
 	// Draw the character
-	drawCharacter(rough,canvasWidth/2-50-dist*20,250,gestA,-1,"white",5);
-	drawCharacter(rough,canvasWidth/2+50+dist*20,250,gestB,1,"white",5);
+	// todo:how to determine the position?
+	var posAX=canvasWidth/2-50-dist*20, 
+		posAY=250,
+		posBX=canvasWidth/2+50+dist*20,
+		posBY=250;
+	if(gestA == -2){
+		posAY+=20
+	}
+	if(gestB == -2){
+		posBY+=20
+	}
+	drawCharacter(rough,posAX,posAY,gestA,-1,"white",5);
+	drawCharacter(rough,posBX,posBY,gestB,1,"white",5);
 	
-	drawCharacter(rough,canvasWidth/2-50-dist*20,250,gestA,-1,"black",2,0.5);
-	drawCharacter(rough,canvasWidth/2+50+dist*20,250,gestB,1,"black",2,0.5);
+	drawCharacter(rough,posAX,posAY,gestA,-1,"black",2,0.5);
+	drawCharacter(rough,posBX,posBY,gestB,1,"black",2,0.5);
 	
 	// Add message bubble
 	// And draw the lines between bubbles
+	// todo:put the message in one list
 	var bubbleA = []
 	var bubbleB = []
-	for (var i = 0;i<msgListA.length;i++){
-		drawBubble(rough,30-2, 200-50*(i+1),msgListA[i],"white","bold 15px Coming Soon",true)
-		drawBubble(rough,30+2, 200-50*(i+1),msgListA[i],"white","bold 15px Coming Soon",true)
-		drawBubble(rough,30, 200-50*(i+1)-2,msgListA[i],"white","bold 15px Coming Soon",true)
-		drawBubble(rough,30, 200-50*(i+1)+2,msgListA[i],"white","bold 15px Coming Soon",true)
-		drawBubble(rough,30-2, 200-50*(i+1)-2,msgListA[i],"white","bold 15px Coming Soon",true)
-		drawBubble(rough,30+2, 200-50*(i+1)+2,msgListA[i],"white","bold 15px Coming Soon",true)
-		drawBubble(rough,30-2, 200-50*(i+1)+2,msgListA[i],"white","bold 15px Coming Soon",true)
-		drawBubble(rough,30+2, 200-50*(i+1)-2,msgListA[i],"white","bold 15px Coming Soon",true)
-		bubbleA.push(drawBubble(rough,30, 200-50*(i+1),msgListA[i],"black","bold 15px Coming Soon",true));
+	var bbX = 0;
+	var bbY = 20;
+	var lastMark = '';
+	for(var i = 0;i<msgTotalList.length;i++){
+		if(lastMark == '' || lastMark == msgTotalList[i].mark){
+			bbY += 30;
+		}
+		if(msgTotalList[i].mark=="A"){				
+			bbX = posAX-50;
+			var tmpBubble = drawBubble(rough,bbX,bbY,msgTotalList[i].content,
+			"black","bold 15px HumorSansRegular",(posBX-30-bbX)*1.8/fontSize);
+			bubbleA.push(tmpBubble);
+			bbY = tmpBubble.y2;
+		}
+		else if(msgTotalList[i].mark=="B"){
+			bbX = posBX-50;
+			var tmpBubble = drawBubble(rough,bbX,bbY,msgTotalList[i].content,
+			"black","bold 15px HumorSansRegular",(canvasWidth-borderDist-bbX)*1.8/fontSize);
+			bubbleB.push(tmpBubble);
+			bbY = tmpBubble.y2;
+		}	
+		lastMark = msgTotalList[i].mark; 
 	}
-	bubbleA.push({x1:100-dist*20,y1:230,len1:4});
+	
+	bubbleA.push({x1:posAX-10,y1:posAY-18,len1:2});
 	for (var i = 0;i<bubbleA.length-1;i++){
 		drawBubbleCurve(rough, bubbleA[i].x2,bubbleA[i].y2, bubbleA[i].len2, bubbleA[i+1].x1,bubbleA[i+1].y1,bubbleA[i+1].len1);
 	}
-	
-	for (var i = 0;i<msgListB.length;i++){
-		drawBubble(rough,150-2, 50*(i+1),msgListB[i],"white","bold 15px Coming Soon",true)
-		drawBubble(rough,150+2, 50*(i+1),msgListB[i],"white","bold 15px Coming Soon",true)
-		drawBubble(rough,150, 50*(i+1)-2,msgListB[i],"white","bold 15px Coming Soon",true)
-		drawBubble(rough,150, 50*(i+1)+2,msgListB[i],"white","bold 15px Coming Soon",true)
-		drawBubble(rough,150-2, 50*(i+1)-2,msgListB[i],"white","bold 15px Coming Soon",true)
-		drawBubble(rough,150+2, 50*(i+1)+2,msgListB[i],"white","bold 15px Coming Soon",true)
-		drawBubble(rough,150+2, 50*(i+1)-2,msgListB[i],"white","bold 15px Coming Soon",true)
-		drawBubble(rough,150-2, 50*(i+1)+2,msgListB[i],"white","bold 15px Coming Soon",true)
-		bubbleB.push(drawBubble(rough,150, 50*(i+1),msgListB[i],"black","bold 15px Coming Soon",true));
-	}
-	bubbleB.push({x1:200+dist*20,y1:230,len1:4});
+
+	bubbleB.push({x1:posBX,y1:posBY-18,len1:2});
 	for (var i = 0;i<bubbleB.length-1;i++){
 		drawBubbleCurve(rough,bubbleB[i].x2,bubbleB[i].y2,bubbleB[i].len2,bubbleB[i+1].x1,bubbleB[i+1].y1,bubbleB[i+1].len1);
 	}
@@ -352,7 +373,7 @@ function drawCharacter(rough,x,y,gest=defaultGest,ori = -1,lineColor="black",lin
 
 }
 
-function drawBubble(rough,x,y,message,msgFontColor="black",msgFont = "15px",isBold=false,limit = 18){
+function drawBubble(rough,x,y,message,msgFontColor="black",msgFont = "15px",limit = 15){
 	var x1,y1,x2,y2;
 	// Set message
 	// todo: a little problem in the limit setting
@@ -362,6 +383,14 @@ function drawBubble(rough,x,y,message,msgFontColor="black",msgFont = "15px",isBo
 	x1 = tmpX;
 	y1 = tmpY;
 	for (var i =0; i < msgList.length; i++){
+		rough.createText(msgList[i],tmpX+2,tmpY,msgFont,"white");
+		rough.createText(msgList[i],tmpX-2,tmpY,msgFont,"white");
+		rough.createText(msgList[i],tmpX,tmpY+2,msgFont,"white");
+		rough.createText(msgList[i],tmpX,tmpY-2,msgFont,"white");
+		rough.createText(msgList[i],tmpX+2,tmpY+2,msgFont,"white");
+		rough.createText(msgList[i],tmpX+2,tmpY-2,msgFont,"white");
+		rough.createText(msgList[i],tmpX-2,tmpY+2,msgFont,"white");
+		rough.createText(msgList[i],tmpX-2,tmpY-2,msgFont,"white");
 		var msgText = rough.createText(msgList[i],tmpX,tmpY,msgFont,msgFontColor);
 		tmpY += fontSize;
 	}
